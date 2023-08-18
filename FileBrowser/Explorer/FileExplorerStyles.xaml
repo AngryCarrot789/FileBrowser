@@ -1,0 +1,130 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    mc:Ignorable="d"
+                    xmlns:exploring="clr-namespace:FileBrowser.Exploring"
+                    xmlns:files="clr-namespace:FileBrowser.Files"
+                    xmlns:controls="clr-namespace:FileBrowser.Files.Controls"
+                    xmlns:fileSizes="clr-namespace:FileBrowser.Files.FileSizes"
+                    xmlns:viewModels="clr-namespace:FileBrowser.ViewModels"
+                    xmlns:controls1="clr-namespace:FileBrowser.Controls"
+                    xmlns:utils="clr-namespace:FileBrowser.Utils"
+                    xmlns:attachedProperties="clr-namespace:FileBrowser.AttachedProperties"
+                    xmlns:commands="clr-namespace:FileBrowser.AttachedProperties.Commands">
+    <Style x:Key="FileExplorerListViewItem" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
+    <Style x:Key="DriveWrapListBoxStyle" TargetType="{x:Type ListBox}" BasedOn="{StaticResource {x:Type ListBox}}">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type exploring:FileExplorerControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type exploring:FileExplorerControl}">
+                    <Grid d:DataContext="{d:DesignInstance viewModels:FileExplorerViewModel}">
+                        <ListBox ItemsSource="{TemplateBinding ItemsSource}" x:Name="PART_DriveList" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.Resources>
+                                <DataTemplate DataType="{x:Type files:DriveItemViewModel}">
+                                    <controls:DriveWrapItemControl DataContext="{Binding}" Padding="2"/>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type files:DirectoryItemViewModel}">
+                                    <controls:DirectoryWrapItemControl DataContext="{Binding}"/>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type files:FileItemViewModel}">
+                                    <controls:FileWrapItemControl DataContext="{Binding}"/>
+                                </DataTemplate>
+                            </ListBox.Resources>
+                        </ListBox>
+                        <ListView ScrollViewer.CanContentScroll="False" ItemsSource="{TemplateBinding ItemsSource}" x:Name="PART_FileList" Visibility="Visible" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling"/>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        <GridViewColumn Header="File Name" Width="400">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <controls1:IconTextPairControl x:Name="IconControl" d:DataContext="{d:DesignInstance files:FileItemViewModel}" Text="{Binding FileName, Mode=OneTime}" TargetFilePath="{Binding FilePath}" HorizontalAlignment="Stretch" Background="Transparent">
+                                                        <!--
+                                                        <commands:EventCommands.Commands>
+                                                            <commands:ListViewItemMouseDoubleClickCommand Command="{Binding NavigateCommand}"/>
+                                                        </commands:EventCommands.Commands>
+                                                        -->
+
+                                                        <controls1:IconTextPairControl.InputBindings>
+                                                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding NavigateCommand}"/>
+                                                        </controls1:IconTextPairControl.InputBindings>
+                                                    </controls1:IconTextPairControl>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Type" Width="120">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Converter={StaticResource FileTypeConverter}}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Size" Width="125">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ContentPresenter Content="{Binding}" HorizontalAlignment="Right">
+                                                        <ContentPresenter.Resources>
+                                                            <DataTemplate DataType="{x:Type files:FileItemViewModel}">
+                                                                <TextBlock FontFamily="Consolas" Text="{Binding FileSize, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FileSizeConverter}}" TextAlignment="Right" HorizontalAlignment="Right"/>
+                                                            </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type files:DirectoryItemViewModel}">
+                                                                <fileSizes:DirectorySizeControl DataContext="{Binding}"/>
+                                                            </DataTemplate>
+                                                        </ContentPresenter.Resources>
+                                                    </ContentPresenter>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ExplorerViewMode" Value="Wrap">
+                            <Setter Property="Visibility" TargetName="PART_DriveList" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="PART_FileList" Value="Collapsed"/>
+                            <Setter Property="ItemsSource" TargetName="PART_FileList" Value="{x:Null}"/>
+                        </Trigger>
+                        <Trigger Property="ExplorerViewMode" Value="List">
+                            <Setter Property="Visibility" TargetName="PART_DriveList" Value="Collapsed"/>
+                            <Setter Property="ItemsSource" TargetName="PART_DriveList" Value="{x:Null}"/>
+                            <Setter Property="Visibility" TargetName="PART_FileList" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
