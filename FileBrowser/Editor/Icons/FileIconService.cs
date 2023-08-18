@@ -49,9 +49,15 @@ namespace FileBrowser.Editor.Icons {
             this.canDirectoryThreadRun = true;
             this.canUpdateTaskRun = true;
 
-            this.fileThread = new Thread(this.FileQueueThreadMain);
-            this.directoryThread = new Thread(this.DirectoryQueueThreadMain);
-            this.updateThread = new Thread(this.UpdateMain);
+            this.fileThread = new Thread(this.FileQueueThreadMain) {
+                IsBackground = true, Name = "Icon Thread | Files"
+            };
+            this.directoryThread = new Thread(this.DirectoryQueueThreadMain) {
+                IsBackground = true, Name = "Icon Thread | Directories"
+            };
+            this.updateThread = new Thread(this.UpdateMain) {
+                IsBackground = true, Name = "Icon Thread | Update Thread"
+            };
 
             this.fileThread.Start();
             this.directoryThread.Start();
@@ -72,69 +78,72 @@ namespace FileBrowser.Editor.Icons {
         private void UpdateMain() {
             while (this.canUpdateTaskRun) {
                 int size = Math.Min(this.updateQueue.Count, 20);
-                if (size > 0) {
-                    Application.Current.Dispatcher.Invoke(() => {
-                        for (int i = 0; i < size; i++) {
-                            if (this.updateQueue.TryDequeue(out PendingIconDelivery pair)) {
-                                pair.SetImage();
-                                this.cache.PutImage(pair.path, pair.image);
-                            }
-                            else {
-                                break;
-                            }
-                        }
-                    });
+                if (size < 1) {
+                    Thread.Sleep(10);
+                    continue;
                 }
 
-                Thread.Sleep(25);
+                Application.Current.Dispatcher.Invoke(() => {
+                    for (int i = 0; i < size; i++) {
+                        if (this.updateQueue.TryDequeue(out PendingIconDelivery pair)) {
+                            pair.SetImage();
+                            this.cache.PutImage(pair.path, pair.image);
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                });
             }
         }
 
         private void FileQueueThreadMain() {
             while (this.canFileThreadRun) {
                 int count = Math.Min(this.fileQueue.Count, 5);
-                if (count > 0) {
-                    Application.Current.Dispatcher.Invoke(() => {
-                        for (int i = 0; i < count; i++) {
-                            if (this.fileQueue.TryDequeue(out QueuedIconResolution control)) {
-                                string path = control.path;
-                                if (File.Exists(path)) {
-                                    this.updateQueue.Enqueue(new PendingIconDelivery(path, control.imageable, ShellUtils.GetFileIconAsBitmapSource(path, control.iconType, false)));
-                                }
-                            }
-                        }
-                    });
+                if (count <= 0) {
+                    Thread.Sleep(10);
+                    continue;
                 }
 
-                Thread.Sleep(10);
+                Application.Current.Dispatcher.Invoke(() => {
+                    for (int i = 0; i < count; i++) {
+                        if (this.fileQueue.TryDequeue(out QueuedIconResolution control)) {
+                            string path = control.path;
+                            if (File.Exists(path)) {
+                                this.updateQueue.Enqueue(new PendingIconDelivery(path, control.imageable, ShellUtils.GetFileIconAsBitmapSource(path, control.iconType, false)));
+                            }
+                        }
+                    }
+                });
             }
         }
 
         private void DirectoryQueueThreadMain() {
             while (this.canDirectoryThreadRun) {
                 int count = Math.Min(this.directoryQueue.Count, 5);
-                if (count > 0) {
-                    Application.Current.Dispatcher.Invoke(() => {
-                        for (int i = 0; i < count; i++) {
-                            if (this.directoryQueue.TryDequeue(out QueuedIconResolution control)) {
-                                string path = control.path;
-                                if (Directory.Exists(path)) {
-                                    BitmapSource source;
-                                    if (control.iconType == ShellIconSize.Large) {
-                                        source = ShellEx.GetBitmapSourceForPath(path, false, true);
-                                    }
-                                    else {
-                                        source = ShellUtils.GetFileIconAsBitmapSource(path, control.iconType, true);
-                                    }
-
-                                    this.updateQueue.Enqueue(new PendingIconDelivery(path, control.imageable, source));
-                                }
-                            }
-                        }
-                    });
+                if (count <= 0) {
+                    Thread.Sleep(10);
+                    continue;
                 }
 
-                Thread.Sleep(10);
+                Application.Current.Dispatcher.Invoke(() => {
+                    for (int i = 0; i < count; i++) {
+                        if (this.directoryQueue.TryDequeue(out QueuedIconResolution control)) {
+                            string path = control.path;
+                            if (Directory.Exists(path)) {
+                                BitmapSource source;
+                                if (control.iconType == ShellIconSize.Large) {
+                                    source = ShellEx.GetBitmapSourceForPath(path, false, true);
+                                }
+                                else {
+                                    source = ShellUtils.GetFileIconAsBitmapSource(path, control.iconType, true);
+                                }
+
+                                this.updateQueue.Enqueue(new PendingIconDelivery(path, control.imageable, source));
+                            }
+                        }
+                    }
+                });
             }
         }
 

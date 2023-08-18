@@ -328,15 +328,14 @@ namespace FileBrowser.Editor.Icons {
             // Get the System IImageList object from the Shell:
             Guid iidImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
 
-            IImageList imageList;
             int size = jumbo ? SHIL_JUMBO : SHIL_EXTRALARGE;
-            int hres = SHGetImageList(size, ref iidImageList, out imageList);
+            int hres = SHGetImageList(size, ref iidImageList, out IImageList imageList);
             if (hres != 0) {
                 throw new Win32Exception();
             }
 
             IntPtr hIcon = IntPtr.Zero;
-            int ILD_TRANSPARENT = 1;
+            const int ILD_TRANSPARENT = 1;
             hres = imageList.GetIcon(iconIndex, ILD_TRANSPARENT, ref hIcon);
             if (hres != 0) {
                 throw new Win32Exception();

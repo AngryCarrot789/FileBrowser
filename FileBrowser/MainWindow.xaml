@@ -222,8 +222,17 @@
                                     <GridView.Columns>
                                         <GridViewColumn Header="File Name" Width="400">
                                             <GridViewColumn.CellTemplate>
-                                                <DataTemplate DataType="{x:Type fe:BaseIOExplorerItemViewModel}">
-                                                    <TextBlock Text="{Binding FileName}"/>
+                                                <DataTemplate DataType="{x:Type fe:BaseExplorerItemViewModel}">
+                                                    <ContentPresenter Content="{Binding}" HorizontalAlignment="Left">
+                                                        <ContentPresenter.Resources>
+                                                            <DataTemplate DataType="{x:Type fe:ExplorerIOFileItemViewModel}">
+                                                                <controls:IconTextPairControl Text="{Binding FileName}" TargetFilePath="{Binding FilePath}" HorizontalAlignment="Stretch" Background="Transparent"/>
+                                                            </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type fe:ExplorerIOFolderItemViewModel}">
+                                                                <controls:IconTextPairControl Text="{Binding FileName}" TargetFilePath="{Binding FilePath}" HorizontalAlignment="Stretch" Background="Transparent"/>
+                                                            </DataTemplate>
+                                                        </ContentPresenter.Resources>
+                                                    </ContentPresenter>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>

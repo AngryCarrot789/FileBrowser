@@ -87,7 +87,7 @@ namespace FileBrowser.Editor.Icons {
 
             BitmapSource image = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             if (!DeleteObject(hBitmap)) {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
+                throw new Win32Exception();
             }
 
             return image;
@@ -120,8 +120,9 @@ namespace FileBrowser.Editor.Icons {
         }
 
         public static BitmapSource GetFileIconAsBitmapSource(string path, ShellIconSize iconType = ShellIconSize.Normal, bool isDirectory = false) {
-            Icon icon = GetFileIcon(path, iconType, isDirectory);
-            return icon != null ? IconToBitmapSource(icon) : null;
+            using (Icon icon = GetFileIcon(path, iconType, isDirectory)) {
+                return icon != null ? IconToBitmapSource(icon) : null;
+            }
         }
 
         public static string GetFileTypeDescription(string fileNameOrExtension) {

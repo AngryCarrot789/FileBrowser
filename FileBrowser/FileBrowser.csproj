@@ -39,6 +39,7 @@
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -98,13 +99,16 @@
     <Compile Include="Controls\Dragger\IValuePreProcessor.cs" />
     <Compile Include="Controls\Dragger\NumberDragger.cs" />
     <Compile Include="Controls\Dragger\ValueStringFormatter.cs" />
+    <Compile Include="Controls\FileIconImageControl.cs" />
     <Compile Include="Controls\FocusHelper.cs" />
     <Compile Include="Controls\FreeMoveViewPortV2.cs" />
     <Compile Include="Controls\HighlightableTextBlock.cs" />
     <Compile Include="Controls\HorizontalIncrement.cs" />
     <Compile Include="Controls\IconTextPair.cs" />
+    <Compile Include="Controls\IconTextPairControl.cs" />
     <Compile Include="Controls\InfiniteScrollViewer.cs" />
     <Compile Include="Controls\SelectionAdorder.cs" />
+    <Compile Include="Controls\SystemIconImageControl.cs" />
     <Compile Include="Controls\TreeExtension.cs" />
     <Compile Include="Controls\VerticalIncrement.cs" />
     <Compile Include="Controls\ViewBoxClone.cs" />
@@ -141,6 +145,7 @@
     <Compile Include="Converters\NullConverter.cs" />
     <Compile Include="Converters\ScrollBinder.cs" />
     <Compile Include="Converters\SingletonValueConverter.cs" />
+    <Compile Include="Converters\SystemIconToImageSourceConverter.cs" />
     <Compile Include="Converters\TextChangedToUnsavedIndicatorConverter.cs" />
     <Compile Include="Converters\TextToFontDecorationConverter.cs" />
     <Compile Include="Converters\TopPaneOpenedToImageSourceConverter.cs" />
@@ -154,6 +159,12 @@
     </Compile>
     <Compile Include="Editor\Controls\ExplorerMode.cs" />
     <Compile Include="Editor\Controls\FileExplorerControl.cs" />
+    <Compile Include="Editor\Icons\CSIDL.cs" />
+    <Compile Include="Editor\Icons\FileIconService.cs" />
+    <Compile Include="Editor\Icons\IconCache.cs" />
+    <Compile Include="Editor\Icons\IImageable.cs" />
+    <Compile Include="Editor\Icons\ShellEx.cs" />
+    <Compile Include="Editor\Icons\ShellUtils.cs" />
     <Compile Include="Highlighting\HighlightableString.cs" />
     <Compile Include="Highlighting\InlineHelper.cs" />
     <Compile Include="InformationStuff\Information.cs" />
@@ -244,6 +255,7 @@
     <Compile Include="Utils\NumberAverager.cs" />
     <Compile Include="Utils\ResourceDictionaryDataTemplateSelector.cs" />
     <Compile Include="Utils\ScrollerUtils.cs" />
+    <Compile Include="Utils\ShellIconSize.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
     <Compile Include="Utils\StringHelper.cs" />
     <Compile Include="Utils\TextBoxLineNumbers.cs" />

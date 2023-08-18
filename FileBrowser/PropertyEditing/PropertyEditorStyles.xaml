@@ -3,8 +3,6 @@
                     xmlns:s="clr-namespace:System;assembly=mscorlib"
                     xmlns:primitives="clr-namespace:FileBrowser.Core.PropertyEditing.Editors.Primitives;assembly=FileBrowser.Core"
                     xmlns:pec="clr-namespace:FileBrowser.Core.PropertyEditing;assembly=FileBrowser.Core"
-                    xmlns:cpe="clr-namespace:FileBrowser.Core.Editor.Classes.PropertyEditors;assembly=FileBrowser.Core"
-                    xmlns:innerClasses="clr-namespace:FileBrowser.Core.Editor.Classes.PropertyEditors.InnerClasses;assembly=FileBrowser.Core"
                     xmlns:pe="clr-namespace:FileBrowser.PropertyEditing"
                     xmlns:c="clr-namespace:FileBrowser.Converters">
     <s:Double x:Key="FloatMinValue">-3.402823E+38</s:Double>

@@ -16,7 +16,7 @@ namespace FileBrowser.Core.Editor.FileExplorer {
             }
         }
 
-        public string FileName {
+        public override string FileName {
             get {
                 if (string.IsNullOrEmpty(this.FilePath))
                     return "";

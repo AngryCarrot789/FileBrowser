@@ -2,9 +2,9 @@ using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using RZFileExplorer.Icons;
+using FileBrowser.Editor.Icons;
 
-namespace RZFileExplorer.Converters {
+namespace FileBrowser.Converters {
     public class SystemIconToImageSourceConverter : IValueConverter {
         public bool UseSmallIcon { get; set; } = true;
 

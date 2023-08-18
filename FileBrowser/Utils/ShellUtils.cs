@@ -8,12 +8,6 @@ using FileBrowser.Core;
 
 namespace FileBrowser.Utils {
     public static class ShellUtils {
-        public enum IconType {
-            Small,
-            Normal,
-            Large
-        }
-
         #region Structs
 
         private struct SHFILEINFO {

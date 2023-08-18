@@ -2,8 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:converters="clr-namespace:FileBrowser.Converters"
                     xmlns:controls="clr-namespace:FileBrowser.Controls"
-                    xmlns:dragger="clr-namespace:FileBrowser.Controls.Dragger">
+                    xmlns:dragger="clr-namespace:FileBrowser.Controls.Dragger"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:fe="clr-namespace:FileBrowser.Core.Editor.FileExplorer;assembly=FileBrowser.Core"
+                    mc:Ignorable="d">
     <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
+    <converters:SystemIconToImageSourceConverter x:Key="SystemIconToImageSourceConverter" />
     <Style TargetType="{x:Type controls:IconTextPair}">
         <Setter Property="Template">
             <Setter.Value>
@@ -65,6 +70,39 @@
                                      VerticalAlignment="Center" Padding="0,0,0,0" />
                         </Grid>
                     </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:IconTextPairControl}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="ShellIconSize" Value="Small"/>
+        <Setter Property="Template" d:DataContext="{d:DesignInstance fe:BaseExplorerItemViewModel}">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:IconTextPairControl}">
+                    <Grid HorizontalAlignment="Left" Height="16">
+                        <Image Source="{TemplateBinding Source}" VerticalAlignment="Stretch" Width="18" HorizontalAlignment="Left"/>
+                        <Label VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="2 0" Margin="23 0 0 0" HorizontalAlignment="Left">
+                            <TextBlock Text="{TemplateBinding Text}" VerticalAlignment="Center"/>
+                        </Label>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsFileHidden}" Value="True">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:SystemIconImageControl}">
+        <Setter Property="SystemIconType" Value="CSIDL_DESKTOP"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:SystemIconImageControl}">
+                    <Image Source="{TemplateBinding SystemIconType, Converter={StaticResource SystemIconToImageSourceConverter}}"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
