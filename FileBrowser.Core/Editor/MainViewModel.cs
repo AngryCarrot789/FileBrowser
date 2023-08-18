@@ -18,7 +18,7 @@ namespace FileBrowser.Core.Editor {
             this.OpenFolderCommand = new AsyncRelayCommand(this.OpenFolderAction);
             this.FileManager = new FileManagerViewModel();
             this.FileTree = new FileTreeViewModel();
-
+            this.FileTree.NavigateToItem += this.FileTree_NavigateToItem;
             // just hoping these never throw...
 
             foreach (Environment.SpecialFolder folder in Enum.GetValues(typeof(Environment.SpecialFolder))) {
@@ -34,6 +34,16 @@ namespace FileBrowser.Core.Editor {
             }
 
             this.FileManager.ActiveExplorer = this.FileManager.OpenExplorerAtInternal(null);
+        }
+
+        private Task FileTree_NavigateToItem(BaseTreeFileViewModel file)
+        {
+            if (file is IOFolderItemViewModel folder && !string.IsNullOrEmpty(folder.FilePath) && Directory.Exists(folder.FilePath))
+            {
+                return this.FileManager.NavigateToFolder(folder.FilePath);
+            }
+
+            return Task.CompletedTask;
         }
 
         private async Task ExplorerOnOpenFile(IOFileItemViewModel file) {

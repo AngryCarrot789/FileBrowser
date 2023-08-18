@@ -25,10 +25,10 @@ namespace FileBrowser.Core.Editor.FileTree.Physical {
             this.FilePath = filePath;
         }
 
-        public override void SetExplorer(FileTreeViewModel newTree) {
-            base.SetExplorer(newTree);
+        public override void SetTreeExplorer(FileTreeViewModel newTree) {
+            base.SetTreeExplorer(newTree);
             foreach (BaseIOFileItemViewModel item in this.items) {
-                item.SetExplorer(newTree);
+                item.SetTreeExplorer(newTree);
             }
         }
 

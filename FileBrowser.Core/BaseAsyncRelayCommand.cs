@@ -93,7 +93,7 @@ namespace FileBrowser.Core {
         /// Attempts to executing this async command. If the command is already running, then this method will return
         /// false and the command will not be executed. Otherwise, the command is executed and true is returned
         /// <para>
-        /// This will query <see cref="CanExecute"/>
+        /// This will query <see cref="CanExecute"/>, meaning the command won't be executed if it is disabled
         /// </para>
         /// </summary>
         /// <param name="parameter">The parameter passed to this command</param>

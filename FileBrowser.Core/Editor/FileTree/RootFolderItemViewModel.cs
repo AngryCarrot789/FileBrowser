@@ -17,10 +17,10 @@ namespace FileBrowser.Core.Editor.FileTree {
             this.Items = new ReadOnlyObservableCollection<BaseTreeFileViewModel>(this.items);
         }
 
-        public override void SetExplorer(FileTreeViewModel newTree) {
-            base.SetExplorer(newTree);
+        public override void SetTreeExplorer(FileTreeViewModel newTree) {
+            base.SetTreeExplorer(newTree);
             foreach (BaseTreeFileViewModel item in this.items) {
-                item.SetExplorer(newTree);
+                item.SetTreeExplorer(newTree);
             }
         }
 

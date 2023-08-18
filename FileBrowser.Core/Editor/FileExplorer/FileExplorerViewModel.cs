@@ -27,7 +27,7 @@ namespace FileBrowser.Core.Editor.FileExplorer {
         public string CurrentFolderName {
             get {
                 if (string.IsNullOrEmpty(this.CurrentFolder))
-                    return "";
+                    return "<root>";
                 string path = Path.GetFileName(this.CurrentFolder);
                 return string.IsNullOrEmpty(path) ? this.CurrentFolder : path;
             }
@@ -49,18 +49,19 @@ namespace FileBrowser.Core.Editor.FileExplorer {
             set => this.RaisePropertyChanged(ref this.explorerView, value);
         }
 
-        public AsyncRelayCommand<ExplorerIOFolderItemViewModel> NavigateCommand { get; }
+        public AsyncRelayCommand<BaseExplorerItemViewModel> NavigateCommand { get; }
 
         public FileExplorerViewModel() {
             this.items = new ObservableCollection<BaseExplorerItemViewModel>();
             this.Items = new ReadOnlyObservableCollection<BaseExplorerItemViewModel>(this.items);
-            this.NavigateCommand = new AsyncRelayCommand<ExplorerIOFolderItemViewModel>((x) => {
-                if (x != null && !string.IsNullOrEmpty(x.FilePath) && Directory.Exists(x.FilePath)) {
-                    return this.NavigateAction(x.FilePath);
+            this.NavigateCommand = new AsyncRelayCommand<BaseExplorerItemViewModel>((x) => {
+                if (x is ExplorerIOFolderItemViewModel folder) {
+                    if (!string.IsNullOrEmpty(folder.FilePath) && Directory.Exists(folder.FilePath)) {
+                        return this.NavigateAction(folder.FilePath);
+                    }
                 }
-                else {
-                    return Task.CompletedTask;
-                }
+
+                return Task.CompletedTask;
             });
         }
 

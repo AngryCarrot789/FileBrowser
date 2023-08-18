@@ -7,6 +7,7 @@
                     xmlns:controls="clr-namespace:FileBrowser.Controls"
                     xmlns:c="clr-namespace:FileBrowser.Converters"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:ap="clr-namespace:FileBrowser.AttachedProperties"
                     mc:Ignorable="d">
     <c:FileSizeConverter x:Key="FileSizeConverter"/>
 
@@ -122,6 +123,7 @@
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="ap:AttachedInteractivity.DoubleClickCommand" Value="{Binding Explorer.NavigateCommand}"/>
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.View>

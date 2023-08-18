@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,11 +18,12 @@ namespace FileBrowser.Core.Editor.FileTree {
 
         public event OpenFileEventHandler OpenFile;
         public event OpenZipEntryEventHandler OpenZipFile;
+        public event NavigateToItemEventHandler NavigateToItem;
 
         public FileTreeViewModel() {
             this.OpenItemCommand = new AsyncRelayCommand<BaseTreeFileViewModel>(this.OpenFileAction);
             this.Root = new RootFolderItemViewModel();
-            this.Root.SetExplorer(this);
+            this.Root.SetTreeExplorer(this);
         }
 
         /// <summary>
@@ -90,6 +92,17 @@ namespace FileBrowser.Core.Editor.FileTree {
             }
 
             Debug.WriteLine("Dropped! " + string.Join(", ", paths));
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Called when the user tries to navigate to the given file. May be a file or folder
+        /// </summary>
+        public Task OnNavigate(BaseTreeFileViewModel file)
+        {
+            NavigateToItemEventHandler x = this.NavigateToItem;
+            if (x != null)
+                return x(file);
             return Task.CompletedTask;
         }
     }

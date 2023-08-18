@@ -11,9 +11,7 @@
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Rectangle Margin="2" SnapsToDevicePixels="true"
-                               Stroke="{DynamicResource ABrush.ColourfulGlyph.Static}"
-                               StrokeThickness="1" StrokeDashArray="1 2"/>
+                    <Rectangle Margin="0" SnapsToDevicePixels="true" Stroke="{DynamicResource ABrush.ColourfulGlyph.Static}" StrokeThickness="2"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -23,7 +21,7 @@
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="{DynamicResource ABrush.Foreground.Static}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="{DynamicResource ABrush.ColourfulGlyph.Static}" StrokeThickness="1"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -33,9 +31,7 @@
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border>
-                        <Rectangle Margin="0" SnapsToDevicePixels="true" Stroke="Black" StrokeThickness="1" StrokeDashArray="1 2"/>
-                    </Border>
+                    <Rectangle Margin="0" SnapsToDevicePixels="true" Stroke="{DynamicResource ABrush.ColourfulGlyph.Static}" StrokeThickness="1"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -45,7 +41,7 @@
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Rectangle/>
+                    <Rectangle Margin="0" SnapsToDevicePixels="true" Stroke="{DynamicResource ABrush.ColourfulGlyph.Static}" StrokeThickness="2"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -2296,6 +2292,8 @@
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Foreground" Value="{DynamicResource ABrush.Foreground.Static}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="5,2,0,2"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="GridViewColumnHeader">
@@ -2308,8 +2306,13 @@
                                 <VisualState x:Name="Disabled"/>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Border x:Name="HeaderBorder" BorderThickness="0,0,0,1" Padding="2,0,2,0" BorderBrush="{DynamicResource ListView.GridView.Static.Border}" Background="{DynamicResource ListView.GridView.HeaderItem.Background}">
-                            <ContentPresenter x:Name="HeaderContent" Margin="0,0,0,1" RecognizesAccessKey="True" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        <Border x:Name="HeaderBorder" BorderThickness="0,0,0,1" Padding="2,0,2,0" 
+                                BorderBrush="{DynamicResource ListView.GridView.Static.Border}" 
+                                Background="{DynamicResource ListView.GridView.HeaderItem.Background}">
+                            <ContentPresenter x:Name="HeaderContent" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                         </Border>
                         <Thumb x:Name="PART_HeaderGripper" HorizontalAlignment="Right" Margin="0,0,-9,0" Style="{StaticResource GridViewColumnHeaderGripper}"/>
                     </Grid>

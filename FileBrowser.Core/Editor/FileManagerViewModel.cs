@@ -61,5 +61,37 @@ namespace FileBrowser.Core.Editor {
                 }
             }
         }
+
+        public async Task NavigateToFolder(string path)
+        {
+            if (this.ActiveExplorer == null)
+            {
+                if (this.explorers.Count < 1)
+                {
+                    FileExplorerViewModel explorer = new FileExplorerViewModel();
+                    this.explorers.Add(explorer);
+                    this.ActiveExplorer = explorer;
+                }
+                else
+                {
+                    FileExplorerViewModel first = this.explorers.FirstOrDefault(x => x.CurrentFolder == path);
+                    if (first != null)
+                    {
+                        this.ActiveExplorer = first;
+                    }
+                    else
+                    {
+                        await this.OpenExplorerAt(path);
+                    }
+
+                    return;
+                }
+            }
+
+            if (this.ActiveExplorer.CurrentFolder == path)
+                return;
+
+            await this.ActiveExplorer.NavigateAction(path);
+        }
     }
 }

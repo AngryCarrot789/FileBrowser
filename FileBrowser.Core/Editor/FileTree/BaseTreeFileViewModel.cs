@@ -70,7 +70,7 @@ namespace FileBrowser.Core.Editor.FileTree {
         /// Sets this file's explorer. This should be overridden by files that contain child files to form a recursive set operation
         /// </summary>
         /// <param name="newTree"></param>
-        public virtual void SetExplorer(FileTreeViewModel newTree) {
+        public virtual void SetTreeExplorer(FileTreeViewModel newTree) {
             this.Tree = newTree;
         }
 
@@ -102,7 +102,7 @@ namespace FileBrowser.Core.Editor.FileTree {
 
             item.parent = parent;
             items.Insert(index, item);
-            item.SetExplorer(parent.Tree);
+            item.SetTreeExplorer(parent.Tree);
             item.RaisePropertyChanged(nameof(item.Parent));
         }
 

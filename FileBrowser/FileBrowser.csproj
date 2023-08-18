@@ -159,6 +159,8 @@
       <DependentUpon>DoubleClickEditBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Explorer\FileExplorerControl.cs" />
+    <Compile Include="Explorer\FileTreeControl.cs" />
+    <Compile Include="Explorer\FileTreeItem.cs" />
     <Compile Include="Explorer\Icons\CSIDL.cs" />
     <Compile Include="Explorer\Icons\FileIconService.cs" />
     <Compile Include="Explorer\Icons\IconCache.cs" />

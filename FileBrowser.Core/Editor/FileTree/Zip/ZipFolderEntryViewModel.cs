@@ -17,10 +17,10 @@ namespace FileBrowser.Core.Editor.FileTree.Zip {
             this.Items = new ReadOnlyObservableCollection<BaseZipItemViewModel>(this.items);
         }
 
-        public override void SetExplorer(FileTreeViewModel newTree) {
-            base.SetExplorer(newTree);
+        public override void SetTreeExplorer(FileTreeViewModel newTree) {
+            base.SetTreeExplorer(newTree);
             foreach (BaseZipItemViewModel item in this.items) {
-                item.SetExplorer(newTree);
+                item.SetTreeExplorer(newTree);
             }
         }
 

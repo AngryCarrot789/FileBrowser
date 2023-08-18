@@ -54,10 +54,9 @@ namespace FileBrowser.Core {
         /// </para>
         /// </summary>
         public virtual void RaiseCanExecuteChanged() {
-            if (this.CanExecuteChanged != null) {
-                IoC.Dispatcher.Invoke(() => {
-                    this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-                });
+            EventHandler handler = this.CanExecuteChanged;
+            if (handler != null) {
+                IoC.Dispatcher.Invoke(() => handler(this, EventArgs.Empty));
             }
         }
 
