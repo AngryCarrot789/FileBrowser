@@ -1,5 +1,5 @@
 using System.Windows;
-using FileBrowser.Editor.Icons;
+using FileBrowser.Explorer.Icons;
 using FileBrowser.Utils;
 using Image = System.Windows.Controls.Image;
 

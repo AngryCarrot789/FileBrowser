@@ -30,8 +30,10 @@ namespace FileBrowser.Core.Editor {
 
             string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             if (!string.IsNullOrEmpty(desktop) && Directory.Exists(desktop)) {
-                this.FileManager.ActiveExplorer = this.FileManager.OpenExplorerAtInternal(desktop);
+                this.FileManager.OpenExplorerAtInternal(desktop);
             }
+
+            this.FileManager.ActiveExplorer = this.FileManager.OpenExplorerAtInternal(null);
         }
 
         private async Task ExplorerOnOpenFile(IOFileItemViewModel file) {

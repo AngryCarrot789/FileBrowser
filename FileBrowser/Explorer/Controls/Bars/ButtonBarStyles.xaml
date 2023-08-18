@@ -1,6 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:bars="clr-namespace:FileBrowser.Editor.Controls.Bars">
+                    xmlns:bars="clr-namespace:FileBrowser.Explorer.Controls.Bars">
     <Style TargetType="{x:Type bars:VerticalButtonBar}">
         <Setter Property="Background" Value="{DynamicResource ABrush.Tone5.Background.Static}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource ABrush.Tone7.Border.Static}"/>

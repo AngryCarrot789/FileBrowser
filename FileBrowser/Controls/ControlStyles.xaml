@@ -78,20 +78,15 @@
     <Style TargetType="{x:Type controls:IconTextPairControl}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="ShellIconSize" Value="Small"/>
-        <Setter Property="Template" d:DataContext="{d:DesignInstance fe:BaseExplorerItemViewModel}">
+        <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:IconTextPairControl}">
-                    <Grid HorizontalAlignment="Left" Height="16">
+                    <Grid HorizontalAlignment="Left" Height="16" d:DataContext="{d:DesignInstance fe:BaseExplorerItemViewModel}">
                         <Image Source="{TemplateBinding Source}" VerticalAlignment="Stretch" Width="18" HorizontalAlignment="Left"/>
-                        <Label VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="2 0" Margin="23 0 0 0" HorizontalAlignment="Left">
-                            <TextBlock Text="{TemplateBinding Text}" VerticalAlignment="Center"/>
+                        <Label VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="2 0" Margin="19 0 0 0" HorizontalAlignment="Left">
+                            <TextBlock Text="{TemplateBinding Text}" VerticalAlignment="Center" Opacity="{TemplateBinding TextOpacity}"/>
                         </Label>
                     </Grid>
-                    <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding IsFileHidden}" Value="True">
-                            <Setter Property="Opacity" Value="0.5"/>
-                        </DataTrigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -25,6 +25,13 @@ namespace FileBrowser.Core.Editor.FileExplorer {
             }
         }
 
+        private bool isHidden;
+
+        public bool IsHidden {
+            get => this.isHidden;
+            set => this.RaisePropertyChanged(ref this.isHidden, value);
+        }
+
         public BaseIOExplorerItemViewModel() {
         }
 

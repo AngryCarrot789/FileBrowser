@@ -13,9 +13,11 @@ namespace FileBrowser.Core.Editor.FileExplorer {
             try {
                 FileInfo info = new FileInfo(path);
                 this.FileSize = info.Length;
+                this.IsHidden = (info.Attributes & FileAttributes.Hidden) != 0;
             }
             catch {
                 this.FileSize = 0;
+                this.IsHidden = false;
             }
 
             this.RaisePropertyChanged(nameof(this.FileSize));

@@ -11,7 +11,6 @@
             xmlns:e="clr-namespace:FileBrowser.Core.Editor.Context;assembly=FileBrowser.Core"
             xmlns:pe="clr-namespace:FileBrowser.PropertyEditing"
             xmlns:attached="clr-namespace:FileBrowser.Themes.Attached"
-            xmlns:controls1="clr-namespace:FileBrowser.Editor.Controls"
             xmlns:interactivity="clr-namespace:FileBrowser.Interactivity"
             xmlns:local="clr-namespace:FileBrowser"
             xmlns:controls="clr-namespace:FileBrowser.Controls"
@@ -19,6 +18,7 @@
             xmlns:jar="clr-namespace:FileBrowser.Core.Editor.FileTree.Zip;assembly=FileBrowser.Core"
             xmlns:physical="clr-namespace:FileBrowser.Core.Editor.FileTree.Physical;assembly=FileBrowser.Core"
             xmlns:fe="clr-namespace:FileBrowser.Core.Editor.FileExplorer;assembly=FileBrowser.Core"
+            xmlns:explorer="clr-namespace:FileBrowser.Explorer"
             mc:Ignorable="d"
             Title="MainWindow" Width="1024" Height="576"
             Style="{StaticResource CustomWindowStyleEx}"
@@ -124,10 +124,10 @@
                             <TextBlock Text="{Binding ZipFileName}" ToolTip="{Binding FullZipPath}"/>
                         </DataTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type physical:IOFolderItemViewModel}" ItemsSource="{Binding Items, Mode=OneTime}">
-                            <TextBlock Text="{Binding FileName}"/>
+                            <controls:IconTextPairControl Text="{Binding FileName}" TargetFilePath="{Binding FilePath}" Background="Transparent"/>
                         </HierarchicalDataTemplate>
                         <DataTemplate DataType="{x:Type physical:IOFileItemViewModel}">
-                            <TextBlock Text="{Binding FileName}"/>
+                            <controls:IconTextPairControl Text="{Binding FileName}" TargetFilePath="{Binding FilePath}" Background="Transparent"/>
                         </DataTemplate>
                     </TreeView.Resources>
                 </TreeView>
@@ -195,74 +195,8 @@
                             </TabControl.ItemTemplate>
                         </TabControl>
                     </Border>
-                    <Border Background="{DynamicResource ABrush.Tone3.Background.Static}"
-                            DataContext="{Binding ActiveExplorer}">
-                        <Border.Resources>
-                            <c:FileSizeConverter x:Key="FileSizeConverter"/>
-                        </Border.Resources>
-                        <ListView x:Name="PART_FileList"
-                                  ItemsSource="{Binding Items, Mode=OneTime}"
-                                  Background="Transparent" BorderThickness="0"
-                                  ScrollViewer.CanContentScroll="True"
-                                  VirtualizingStackPanel.IsVirtualizing="True"
-                                  VirtualizingStackPanel.VirtualizationMode="Recycling"
-                                  VirtualizingStackPanel.ScrollUnit="Pixel">
-                            <ListView.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling"/>
-                                </ItemsPanelTemplate>
-                            </ListView.ItemsPanel>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.View>
-                                <GridView>
-                                    <GridView.Columns>
-                                        <GridViewColumn Header="File Name" Width="400">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate DataType="{x:Type fe:BaseExplorerItemViewModel}">
-                                                    <ContentPresenter Content="{Binding}" HorizontalAlignment="Left">
-                                                        <ContentPresenter.Resources>
-                                                            <DataTemplate DataType="{x:Type fe:ExplorerIOFileItemViewModel}">
-                                                                <controls:IconTextPairControl Text="{Binding FileName}" TargetFilePath="{Binding FilePath}" HorizontalAlignment="Stretch" Background="Transparent"/>
-                                                            </DataTemplate>
-                                                            <DataTemplate DataType="{x:Type fe:ExplorerIOFolderItemViewModel}">
-                                                                <controls:IconTextPairControl Text="{Binding FileName}" TargetFilePath="{Binding FilePath}" HorizontalAlignment="Stretch" Background="Transparent"/>
-                                                            </DataTemplate>
-                                                        </ContentPresenter.Resources>
-                                                    </ContentPresenter>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                        <GridViewColumn Header="Type" Width="120">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Converter={x:Static c:FileTypeConverter.Instance}}"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                        <GridViewColumn Header="Size" Width="125">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <ContentPresenter Content="{Binding}" HorizontalAlignment="Right">
-                                                        <ContentPresenter.Resources>
-                                                            <DataTemplate DataType="{x:Type fe:ExplorerIOFileItemViewModel}">
-                                                                <TextBlock FontFamily="Consolas" Text="{Binding FileSize, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FileSizeConverter}}" TextAlignment="Right" HorizontalAlignment="Right"/>
-                                                            </DataTemplate>
-                                                            <DataTemplate DataType="{x:Type fe:BaseExplorerItemViewModel}">
-                                                                <TextBlock/>
-                                                            </DataTemplate>
-                                                        </ContentPresenter.Resources>
-                                                    </ContentPresenter>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                    </GridView.Columns>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
+                    <Border Background="{DynamicResource ABrush.Tone3.Background.Static}" DataContext="{Binding ActiveExplorer}">
+                        <explorer:FileExplorerControl ItemsSource="{Binding Items, Mode=OneTime}" ExplorerViewMode="{Binding ExplorerView}"/>
                     </Border>
                 </DockPanel>
             </Border>

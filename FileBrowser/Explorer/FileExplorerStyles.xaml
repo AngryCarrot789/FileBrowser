@@ -2,16 +2,70 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                    mc:Ignorable="d"
-                    xmlns:exploring="clr-namespace:FileBrowser.Exploring"
-                    xmlns:files="clr-namespace:FileBrowser.Files"
-                    xmlns:controls="clr-namespace:FileBrowser.Files.Controls"
-                    xmlns:fileSizes="clr-namespace:FileBrowser.Files.FileSizes"
-                    xmlns:viewModels="clr-namespace:FileBrowser.ViewModels"
-                    xmlns:controls1="clr-namespace:FileBrowser.Controls"
-                    xmlns:utils="clr-namespace:FileBrowser.Utils"
-                    xmlns:attachedProperties="clr-namespace:FileBrowser.AttachedProperties"
-                    xmlns:commands="clr-namespace:FileBrowser.AttachedProperties.Commands">
+                    xmlns:files="clr-namespace:FileBrowser.Core.Editor.FileExplorer;assembly=FileBrowser.Core"
+                    xmlns:explorer="clr-namespace:FileBrowser.Explorer"
+                    xmlns:controls="clr-namespace:FileBrowser.Controls"
+                    xmlns:c="clr-namespace:FileBrowser.Converters"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    mc:Ignorable="d">
+    <c:FileSizeConverter x:Key="FileSizeConverter"/>
+
+    <system:Double x:Key="HiddenTextOpacity">0.5</system:Double>
+    <system:Double x:Key="VisibleTextOpacity">1.0</system:Double>
+    <c:BoolConverter x:Key="FileHiddenOpacityConverter" FalseValue="{StaticResource VisibleTextOpacity}" TrueValue="{StaticResource HiddenTextOpacity}"/>
+
+    <!-- File Item Styles -->
+
+    <Style TargetType="{x:Type explorer:FileWrapItemControl}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type explorer:FileWrapItemControl}">
+                    <Grid Background="{TemplateBinding Background}" d:DataContext="{d:DesignInstance files:ExplorerIOFileItemViewModel}">
+                        <controls:IconTextPairControl x:Name="IconControl" Text="{Binding FileName, Mode=OneTime}" TargetFilePath="{Binding FilePath}" HorizontalAlignment="Stretch" Background="Transparent"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type explorer:DirectoryWrapItemControl}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type explorer:DirectoryWrapItemControl}">
+                    <Grid Background="{TemplateBinding Background}" d:DataContext="{d:DesignInstance files:ExplorerIOFolderItemViewModel}">
+                        <controls:IconTextPairControl x:Name="IconControl" Text="{Binding FileName, Mode=OneTime}" TargetFilePath="{Binding FilePath}" HorizontalAlignment="Stretch" Background="Transparent"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type explorer:DriveWrapItemControl}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type explorer:DriveWrapItemControl}">
+                    <Grid Background="{TemplateBinding Background}" d:DataContext="{d:DesignInstance files:ExplorerIODriveItemViewModel}" MinWidth="240" Height="50">
+                        <controls:FileIconImageControl ShellIconSize="Large" TargetFilePath="{Binding FilePath}" Height="50" Width="50" HorizontalAlignment="Left"/>
+                        <StackPanel Margin="50 0 0 0">
+                            <TextBlock Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" HorizontalAlignment="Left" Padding="2"/>
+                            <ProgressBar Minimum="0" Maximum="{Binding TotalSpace, UpdateSourceTrigger=PropertyChanged}" Value="{Binding UsedSpace, UpdateSourceTrigger=PropertyChanged}" Height="12"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding RemainingSpace, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FileSizeConverter}}" VerticalAlignment="Top" HorizontalAlignment="Left" Padding="2 2 1 2"/>
+                                <TextBlock Text=" free of " VerticalAlignment="Top" HorizontalAlignment="Left" Padding="0 2"/>
+                                <TextBlock Text="{Binding TotalSpace, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FileSizeConverter}}" VerticalAlignment="Top" HorizontalAlignment="Left" Padding="1 2 2 2"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- File Explorer Styles -->
+
     <Style x:Key="FileExplorerListViewItem" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
@@ -29,11 +83,11 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type exploring:FileExplorerControl}">
+    <Style TargetType="{x:Type explorer:FileExplorerControl}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type exploring:FileExplorerControl}">
-                    <Grid d:DataContext="{d:DesignInstance viewModels:FileExplorerViewModel}">
+                <ControlTemplate TargetType="{x:Type explorer:FileExplorerControl}">
+                    <Grid d:DataContext="{d:DesignInstance files:FileExplorerViewModel}">
                         <ListBox ItemsSource="{TemplateBinding ItemsSource}" x:Name="PART_DriveList" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -41,18 +95,25 @@
                                 </ItemsPanelTemplate>
                             </ListBox.ItemsPanel>
                             <ListBox.Resources>
-                                <DataTemplate DataType="{x:Type files:DriveItemViewModel}">
-                                    <controls:DriveWrapItemControl DataContext="{Binding}" Padding="2"/>
+                                <DataTemplate DataType="{x:Type files:ExplorerIODriveItemViewModel}">
+                                    <explorer:DriveWrapItemControl DataContext="{Binding}" Padding="2"/>
                                 </DataTemplate>
-                                <DataTemplate DataType="{x:Type files:DirectoryItemViewModel}">
-                                    <controls:DirectoryWrapItemControl DataContext="{Binding}"/>
+                                <DataTemplate DataType="{x:Type files:ExplorerIOFolderItemViewModel}">
+                                    <explorer:DirectoryWrapItemControl DataContext="{Binding}"/>
                                 </DataTemplate>
-                                <DataTemplate DataType="{x:Type files:FileItemViewModel}">
-                                    <controls:FileWrapItemControl DataContext="{Binding}"/>
+                                <DataTemplate DataType="{x:Type files:ExplorerIOFileItemViewModel}">
+                                    <explorer:FileWrapItemControl DataContext="{Binding}"/>
                                 </DataTemplate>
                             </ListBox.Resources>
                         </ListBox>
-                        <ListView ScrollViewer.CanContentScroll="False" ItemsSource="{TemplateBinding ItemsSource}" x:Name="PART_FileList" Visibility="Visible" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <ListView x:Name="PART_FileList" Visibility="Visible"
+                                  ItemsSource="{TemplateBinding ItemsSource}"
+                                  ScrollViewer.CanContentScroll="True"
+                                  VirtualizingStackPanel.IsVirtualizing="True"
+                                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                  VirtualizingStackPanel.ScrollUnit="Pixel"
+                                  Background="{TemplateBinding Background}"
+                                  BorderThickness="{TemplateBinding BorderThickness}">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling"/>
@@ -68,25 +129,30 @@
                                     <GridView.Columns>
                                         <GridViewColumn Header="File Name" Width="400">
                                             <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <controls1:IconTextPairControl x:Name="IconControl" d:DataContext="{d:DesignInstance files:FileItemViewModel}" Text="{Binding FileName, Mode=OneTime}" TargetFilePath="{Binding FilePath}" HorizontalAlignment="Stretch" Background="Transparent">
-                                                        <!--
-                                                        <commands:EventCommands.Commands>
-                                                            <commands:ListViewItemMouseDoubleClickCommand Command="{Binding NavigateCommand}"/>
-                                                        </commands:EventCommands.Commands>
-                                                        -->
-
-                                                        <controls1:IconTextPairControl.InputBindings>
-                                                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding NavigateCommand}"/>
-                                                        </controls1:IconTextPairControl.InputBindings>
-                                                    </controls1:IconTextPairControl>
+                                                <DataTemplate DataType="{x:Type files:BaseExplorerItemViewModel}">
+                                                    <ContentPresenter Content="{Binding}" HorizontalAlignment="Left">
+                                                        <ContentPresenter.Resources>
+                                                            <DataTemplate DataType="{x:Type files:ExplorerIOFileItemViewModel}">
+                                                                <controls:IconTextPairControl Text="{Binding FileName}" TargetFilePath="{Binding FilePath}" HorizontalAlignment="Stretch" Background="Transparent"
+                                                                                              TextOpacity="{Binding IsHidden, Converter={StaticResource FileHiddenOpacityConverter}}"/>
+                                                            </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type files:ExplorerIOFolderItemViewModel}">
+                                                                <controls:IconTextPairControl Text="{Binding FileName}" TargetFilePath="{Binding FilePath}" HorizontalAlignment="Stretch" Background="Transparent"
+                                                                                              TextOpacity="{Binding IsHidden, Converter={StaticResource FileHiddenOpacityConverter}}">
+                                                                    <controls:IconTextPairControl.InputBindings>
+                                                                        <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Explorer.NavigateCommand}" CommandParameter="{Binding}"/>
+                                                                    </controls:IconTextPairControl.InputBindings>
+                                                                </controls:IconTextPairControl>
+                                                            </DataTemplate>
+                                                        </ContentPresenter.Resources>
+                                                    </ContentPresenter>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn Header="Type" Width="120">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Converter={StaticResource FileTypeConverter}}"/>
+                                                    <TextBlock Text="{Binding Converter={x:Static c:FileTypeConverter.Instance}}"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
@@ -95,11 +161,11 @@
                                                 <DataTemplate>
                                                     <ContentPresenter Content="{Binding}" HorizontalAlignment="Right">
                                                         <ContentPresenter.Resources>
-                                                            <DataTemplate DataType="{x:Type files:FileItemViewModel}">
+                                                            <DataTemplate DataType="{x:Type files:ExplorerIOFileItemViewModel}">
                                                                 <TextBlock FontFamily="Consolas" Text="{Binding FileSize, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource FileSizeConverter}}" TextAlignment="Right" HorizontalAlignment="Right"/>
                                                             </DataTemplate>
-                                                            <DataTemplate DataType="{x:Type files:DirectoryItemViewModel}">
-                                                                <fileSizes:DirectorySizeControl DataContext="{Binding}"/>
+                                                            <DataTemplate DataType="{x:Type files:BaseExplorerItemViewModel}">
+                                                                <TextBlock/>
                                                             </DataTemplate>
                                                         </ContentPresenter.Resources>
                                                     </ContentPresenter>

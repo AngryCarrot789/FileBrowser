@@ -8,7 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using FileBrowser.Utils;
 
-namespace FileBrowser.Editor.Icons {
+namespace FileBrowser.Explorer.Icons {
     public class FileIconService {
         private volatile bool canFileThreadRun;
         public bool CanFileThreadRun {

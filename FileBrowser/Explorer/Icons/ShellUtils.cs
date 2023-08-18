@@ -7,7 +7,7 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using FileBrowser.Utils;
 
-namespace FileBrowser.Editor.Icons {
+namespace FileBrowser.Explorer.Icons {
     public static class ShellUtils {
         #region Structs
 

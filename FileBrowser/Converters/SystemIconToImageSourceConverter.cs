@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using FileBrowser.Editor.Icons;
+using FileBrowser.Explorer.Icons;
 
 namespace FileBrowser.Converters {
     public class SystemIconToImageSourceConverter : IValueConverter {

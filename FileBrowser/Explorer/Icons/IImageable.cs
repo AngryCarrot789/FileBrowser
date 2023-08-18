@@ -1,6 +1,6 @@
 using System.Windows.Media;
 
-namespace FileBrowser.Editor.Icons {
+namespace FileBrowser.Explorer.Icons {
     public interface IImageable {
         ImageSource Source { get; set; }
     }

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Windows.Media.Imaging;
 
-namespace FileBrowser.Editor.Icons {
+namespace FileBrowser.Explorer.Icons {
     // Main credits:
     // https://www.c-sharpcorner.com/forums/getting-folders-icon-imageunable-to-take-large-icons
     public static class ShellEx {

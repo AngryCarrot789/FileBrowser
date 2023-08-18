@@ -1,6 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
-using FileBrowser.Editor.Icons;
+using FileBrowser.Explorer.Icons;
 
 namespace FileBrowser.Controls {
     public class SystemIconImageControl : Control {

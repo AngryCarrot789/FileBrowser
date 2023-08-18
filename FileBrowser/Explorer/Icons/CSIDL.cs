@@ -1,4 +1,4 @@
-namespace FileBrowser.Editor.Icons {
+namespace FileBrowser.Explorer.Icons {
     public enum CSIDL {
         // anything with a ? uses the default folder icon, and is therefore "dodgy" and not useful
         // anything with [broken; invalid] will cause the GetBitmapSourceForSystemIcon function to fail

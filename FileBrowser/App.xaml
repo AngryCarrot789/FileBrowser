@@ -19,7 +19,8 @@
                 <ResourceDictionary Source="Notifications/NotificationStyles.xaml" />
 
                 <ResourceDictionary Source="Themes/Globals.xaml"/>
-                <ResourceDictionary Source="Editor/Controls/Bars/ButtonBarStyles.xaml"/>
+                <ResourceDictionary Source="Explorer/Controls/Bars/ButtonBarStyles.xaml"/>
+                <ResourceDictionary Source="Explorer/FileExplorerStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

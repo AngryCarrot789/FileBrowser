@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Windows.Media;
 
-namespace FileBrowser.Editor.Icons {
+namespace FileBrowser.Explorer.Icons {
     public class IconCache {
         private struct TimedUsageImageSource {
             private long lastAccess;

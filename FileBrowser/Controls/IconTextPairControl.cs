@@ -1,7 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using FileBrowser.Editor.Icons;
+using FileBrowser.Core.Utils;
+using FileBrowser.Explorer.Icons;
 using FileBrowser.Utils;
 
 namespace FileBrowser.Controls {
@@ -33,6 +34,23 @@ namespace FileBrowser.Controls {
                 typeof(ShellIconSize),
                 typeof(IconTextPairControl),
                 new PropertyMetadata(ShellIconSize.Normal));
+
+        public static readonly DependencyProperty TextOpacityProperty =
+            DependencyProperty.Register(
+                "TextOpacity",
+                typeof(double),
+                typeof(IconTextPairControl),
+                new PropertyMetadata(1.0d, null, (o, value) => {
+                    double v = (double) value;
+                    if (v < 0d)
+                        return 0d;
+                    return v > 1d ? 1d : value;
+                }));
+
+        public double TextOpacity {
+            get => (double) this.GetValue(TextOpacityProperty);
+            set => this.SetValue(TextOpacityProperty, value);
+        }
 
         public ShellIconSize ShellIconSize {
             get => (ShellIconSize) this.GetValue(ShellIconSizeProperty);

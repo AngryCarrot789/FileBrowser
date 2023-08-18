@@ -1,4 +1,4 @@
-namespace FileBrowser.Explorer {
+namespace FileBrowser.Core.Editor.FileExplorer {
     public enum ExplorerDirectoryType {
         /// <summary>
         /// Physical IO folder on the system

@@ -42,68 +42,106 @@ namespace FileBrowser.Core.Editor.FileExplorer {
         private readonly ObservableCollection<BaseExplorerItemViewModel> items;
         public ReadOnlyObservableCollection<BaseExplorerItemViewModel> Items { get; }
 
+        private ExplorerViewMode explorerView;
+
+        public ExplorerViewMode ExplorerView {
+            get => this.explorerView;
+            set => this.RaisePropertyChanged(ref this.explorerView, value);
+        }
+
+        public AsyncRelayCommand<ExplorerIOFolderItemViewModel> NavigateCommand { get; }
+
         public FileExplorerViewModel() {
             this.items = new ObservableCollection<BaseExplorerItemViewModel>();
             this.Items = new ReadOnlyObservableCollection<BaseExplorerItemViewModel>(this.items);
+            this.NavigateCommand = new AsyncRelayCommand<ExplorerIOFolderItemViewModel>((x) => {
+                if (x != null && !string.IsNullOrEmpty(x.FilePath) && Directory.Exists(x.FilePath)) {
+                    return this.NavigateAction(x.FilePath);
+                }
+                else {
+                    return Task.CompletedTask;
+                }
+            });
+        }
+
+        public void LoadDrives() {
+            this.IsNavigating = true;
+            this.ExplorerView = ExplorerViewMode.Wrap;
+            this.Clear();
+            this.CurrentFolder = null;
+            foreach (DriveInfo info in DriveInfo.GetDrives()) {
+                ExplorerIODriveItemViewModel item = new ExplorerIODriveItemViewModel(info) {
+                    Explorer = this
+                };
+
+                this.items.Add(item);
+            }
+            this.IsNavigating = false;
         }
 
         public async Task NavigateAction(string path) {
-            DirectoryInfo info = new DirectoryInfo(path);
-            IEnumerator<FileSystemInfo> enumerator;
-            try {
-                enumerator = info.EnumerateFileSystemInfos().GetEnumerator();
+            if (string.IsNullOrEmpty(path)) {
+                this.LoadDrives();
             }
-            catch (DirectoryNotFoundException e) {
-                await IoC.MessageDialogs.ShowMessageExAsync("No such directory", $"'{path}' does not exist", e.GetToString());
-                return;
-            }
-            catch (UnauthorizedAccessException e) {
-                await IoC.MessageDialogs.ShowMessageExAsync("Unauthorized Access", "You don't have permission to view this folder", e.GetToString());
-                return;
-            }
-            catch (Exception e) {
-                await IoC.MessageDialogs.ShowMessageExAsync("Error", "Error while opening folder enumerator", e.GetToString());
-                return;
-            }
-
-            this.IsNavigating = true;
-            this.Clear();
-            this.CurrentFolder = path;
-            while (true) {
-                bool moveNext = false;
+            else {
+                DirectoryInfo info = new DirectoryInfo(path);
+                IEnumerator<FileSystemInfo> enumerator;
                 try {
-                    moveNext = enumerator.MoveNext();
+                    enumerator = info.EnumerateFileSystemInfos().GetEnumerator();
                 }
                 catch (DirectoryNotFoundException e) {
-                    await IoC.MessageDialogs.ShowMessageExAsync("Directory no longer exists", $"'{path}' no longer exists", e.GetToString());
+                    await IoC.MessageDialogs.ShowMessageExAsync("No such directory", $"'{path}' does not exist", e.GetToString());
                     return;
                 }
                 catch (UnauthorizedAccessException e) {
-                    await IoC.MessageDialogs.ShowMessageExAsync("Unauthorized Access", "You no longer have permission to view this folder", e.GetToString());
+                    await IoC.MessageDialogs.ShowMessageExAsync("Unauthorized Access", "You don't have permission to view this folder", e.GetToString());
                     return;
                 }
                 catch (Exception e) {
-                    await IoC.MessageDialogs.ShowMessageExAsync("Error", "Error while enumerating next file system entry", e.GetToString());
+                    await IoC.MessageDialogs.ShowMessageExAsync("Error", "Error while opening folder enumerator", e.GetToString());
                     return;
                 }
 
-                if (!moveNext)
-                    break;
+                this.IsNavigating = true;
+                this.ExplorerView = ExplorerViewMode.List;
+                this.Clear();
+                this.CurrentFolder = path;
+                while (true) {
+                    bool moveNext = false;
+                    try {
+                        moveNext = enumerator.MoveNext();
+                    }
+                    catch (DirectoryNotFoundException e) {
+                        await IoC.MessageDialogs.ShowMessageExAsync("Directory no longer exists", $"'{path}' no longer exists", e.GetToString());
+                        return;
+                    }
+                    catch (UnauthorizedAccessException e) {
+                        await IoC.MessageDialogs.ShowMessageExAsync("Unauthorized Access", "You no longer have permission to view this folder", e.GetToString());
+                        return;
+                    }
+                    catch (Exception e) {
+                        await IoC.MessageDialogs.ShowMessageExAsync("Error", "Error while enumerating next file system entry", e.GetToString());
+                        return;
+                    }
+
+                    if (!moveNext)
+                        break;
 
 #if DEBUG
-                this.ProcessEntry(enumerator.Current);
-#else
-                try {
                     this.ProcessEntry(enumerator.Current);
-                }
-                catch (Exception e) {
-                    await IoC.MessageDialogs.ShowMessageExAsync("Error", "Error processing file system entry: " + e, e.GetToString());
-                }
+#else
+                    try {
+                        this.ProcessEntry(enumerator.Current);
+                    }
+                    catch (Exception e) {
+                        await IoC.MessageDialogs.ShowMessageExAsync("Error", "Error processing file system entry: " + e, e.GetToString());
+                    }
 #endif
-            }
+                }
 
-            enumerator.Dispose();
-            this.IsNavigating = false;
+                enumerator.Dispose();
+                this.IsNavigating = false;
+            }
         }
 
         public void Clear() {
@@ -140,22 +178,30 @@ namespace FileBrowser.Core.Editor.FileExplorer {
             else {
                 FileInfo file = (FileInfo) info;
                 item = new ExplorerIOFileItemViewModel() {
-                    FilePath = file.FullName
+                    FilePath = file.FullName,
                 };
             }
 
+            item.Explorer = this;
             int index = CollectionUtils.GetSortInsertionIndex(this.items, item, SortComparer);
             this.items.Insert(index, item);
         }
 
         public void NavigateInternal(string path) {
-            DirectoryInfo info = new DirectoryInfo(path);
-            IEnumerable<FileSystemInfo> enumerator = info.EnumerateFileSystemInfos();
-            this.Clear();
-            this.CurrentFolder = path;
-
-            foreach (FileSystemInfo entry in enumerator) {
-                this.ProcessEntry(entry);
+            if (string.IsNullOrEmpty(path)) {
+                this.LoadDrives();
+            }
+            else {
+                DirectoryInfo info = new DirectoryInfo(path);
+                IEnumerable<FileSystemInfo> enumerator = info.EnumerateFileSystemInfos();
+                this.IsNavigating = true;
+                this.ExplorerView = ExplorerViewMode.List;
+                this.Clear();
+                this.CurrentFolder = path;
+                foreach (FileSystemInfo entry in enumerator) {
+                    this.ProcessEntry(entry);
+                }
+                this.IsNavigating = false;
             }
         }
     }

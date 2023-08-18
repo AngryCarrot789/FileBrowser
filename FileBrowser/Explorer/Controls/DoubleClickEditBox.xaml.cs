@@ -5,7 +5,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace FileBrowser.Editor.Controls {
+namespace FileBrowser.Explorer.Controls {
     /// <summary>
     /// Interaction logic for DoubleClickEditBox.xaml
     /// </summary>

@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace FileBrowser.Editor.Controls.Bars {
+namespace FileBrowser.Explorer.Controls.Bars {
     public class VerticalButtonBarItem : ToggleButton {
         public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(object), typeof(VerticalButtonBarItem), new PropertyMetadata(null));
         public static readonly DependencyProperty DirectionProperty = DependencyProperty.Register("Direction", typeof(ExpandDirection), typeof(VerticalButtonBarItem), new FrameworkPropertyMetadata(ExpandDirection.Right, DirectionPropertyChangedCallback, DirectionPropertyCoerceValueCallback));

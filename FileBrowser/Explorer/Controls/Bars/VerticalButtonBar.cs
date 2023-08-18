@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace FileBrowser.Editor.Controls.Bars {
+namespace FileBrowser.Explorer.Controls.Bars {
     public class VerticalButtonBar : ItemsControl {
         // public static readonly DependencyProperty OrientationProperty =
         //     DependencyProperty.Register(

@@ -152,19 +152,19 @@
     <Compile Include="Converters\TypeEqualityToTrueConverter.cs" />
     <Compile Include="Converters\VolumeToDbConverter.cs" />
     <Compile Include="DummyTreeItemStyleSelector.cs" />
-    <Compile Include="Editor\Controls\Bars\VerticalButtonBar.cs" />
-    <Compile Include="Editor\Controls\Bars\VerticalButtonBarItem.cs" />
-    <Compile Include="Editor\Controls\DoubleClickEditBox.xaml.cs">
+    <Compile Include="Explorer\BaseFileItemControl.cs" />
+    <Compile Include="Explorer\Controls\Bars\VerticalButtonBar.cs" />
+    <Compile Include="Explorer\Controls\Bars\VerticalButtonBarItem.cs" />
+    <Compile Include="Explorer\Controls\DoubleClickEditBox.xaml.cs">
       <DependentUpon>DoubleClickEditBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Editor\Controls\ExplorerMode.cs" />
-    <Compile Include="Editor\Controls\FileExplorerControl.cs" />
-    <Compile Include="Editor\Icons\CSIDL.cs" />
-    <Compile Include="Editor\Icons\FileIconService.cs" />
-    <Compile Include="Editor\Icons\IconCache.cs" />
-    <Compile Include="Editor\Icons\IImageable.cs" />
-    <Compile Include="Editor\Icons\ShellEx.cs" />
-    <Compile Include="Editor\Icons\ShellUtils.cs" />
+    <Compile Include="Explorer\FileExplorerControl.cs" />
+    <Compile Include="Explorer\Icons\CSIDL.cs" />
+    <Compile Include="Explorer\Icons\FileIconService.cs" />
+    <Compile Include="Explorer\Icons\IconCache.cs" />
+    <Compile Include="Explorer\Icons\IImageable.cs" />
+    <Compile Include="Explorer\Icons\ShellEx.cs" />
+    <Compile Include="Explorer\Icons\ShellUtils.cs" />
     <Compile Include="Highlighting\HighlightableString.cs" />
     <Compile Include="Highlighting\InlineHelper.cs" />
     <Compile Include="InformationStuff\Information.cs" />
@@ -324,11 +324,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Editor\Controls\Bars\ButtonBarStyles.xaml">
+    <Page Include="Explorer\Controls\Bars\ButtonBarStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Editor\Controls\DoubleClickEditBox.xaml">
+    <Page Include="Explorer\Controls\DoubleClickEditBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Explorer\FileExplorerStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
